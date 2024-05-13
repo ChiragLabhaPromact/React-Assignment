@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { nanoid } from "@reduxjs/toolkit";
+import { addUser } from "../../features/user/user";
 
 
-function Add({ employeeData, setEmployeeData }) {
+function Add() {
 
     const [name, setName] = useState("");
     const [selectedDate, setSelectedDate] = useState('');
@@ -10,11 +13,12 @@ function Add({ employeeData, setEmployeeData }) {
     const [experience, setExperience] = useState('');
     const nav = useNavigate();
 
+    const dispatch = useDispatch();
+
     const handleAddEmployee = (e) => {
         e.preventDefault();
-        const id = employeeData.length + 1;
         let newEmployee = {
-            id: id,
+            id: nanoid(),
             name: name,
             birthDate: selectedDate,
             department: department,
@@ -28,14 +32,13 @@ function Add({ employeeData, setEmployeeData }) {
 
         nav("/list");
 
-        employeeData.push(newEmployee);
-        setEmployeeData(employeeData);
+        dispatch(addUser(newEmployee));
     }
 
     return (
         <div style={{ height: '100vh', width: '100vw', display: 'flex', justifyContent: 'center', position: 'relative' }}>
             <div style={{ width: '350px', position: 'absolute', top: '15%' }}>
-                <form>
+                <form onSubmit={handleAddEmployee}>
                     <div className="p-2">
                         <h3 className="text-center">Add Employee</h3>
                     </div>
@@ -81,9 +84,8 @@ function Add({ employeeData, setEmployeeData }) {
                         />
                     </div>
                     <button
-                        type="button"
+                        type="submit"
                         className="btn btn-primary w-100"
-                        onClick={handleAddEmployee}
                     > Add Employee </button >
                 </form >
             </div >
